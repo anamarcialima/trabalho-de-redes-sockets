@@ -14,7 +14,7 @@ while True:
     inteiroAleatorio = random.randint(0, 999999999999999999999999999999) # gera um número aleatório de até 30 casas
     inteiroAleatorioEmBytes = inteiroAleatorio.to_bytes(inteiroAleatorio.bit_length() + 7 // 8, byteorder='big') # converte o número aleatório gerado em bytes | (inteiroAleatorio.bit_length() + 7 // 8) faz o calculo do número de bytes necessários para aquele número aleatório
     s.sendall(inteiroAleatorioEmBytes)  # manda número aletório convertido em bytes para o servidor 
-    print('Inteiro aleatório gerado', inteiroAleatorio)
+    print('Inteiro aleatório gerado:', inteiroAleatorio)
 
     resposta = s.recv(1024) # recebe resposta do servidor 
     print("Resposta", resposta)
@@ -22,6 +22,7 @@ while True:
     s.sendall(resposta) # devolve valor recebido do servidor
 
     print("FIM")
+    print("")
 
     s.close() # fecha a conexão
 

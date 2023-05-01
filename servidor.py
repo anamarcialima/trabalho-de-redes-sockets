@@ -1,31 +1,36 @@
 import socket
 import random
 import string
+from time import sleep
 
 HOST = 'localhost'
 PORT = 5000
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((HOST, PORT))
-s.listen()
+while True:
 
-print ('Aguardando conexão de um cliente')
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((HOST, PORT))
+    s.listen()
 
-conn, ender = s.accept() # aceita a conexão com cliente
-print ('Conectado em ', ender)
+    print ('Aguardando conexão de um cliente')
 
-inteiroAleatorio = conn.recv(1024) # recebe número aleatório em bytes 
-inteiroAleatorioEmBytes = int.from_bytes(inteiroAleatorio, byteorder='big') # número em bytes covertido para inteiro
-print("Número aleatório recebido:", inteiroAleatorioEmBytes)
+    conn, ender = s.accept() # aceita a conexão com cliente
+    print ('Conectado em', ender)
 
-if len(str(inteiroAleatorioEmBytes)) > 10:
-    stringAleatoria = ''.join(random.choices(string.ascii_uppercase, k = len(str(inteiroAleatorioEmBytes)))) # gerar string aleatória
-    print("String aleatória gerada: ", stringAleatoria)
-    
-    conn.sendall(str.encode(stringAleatoria)) # enviar string aleatória para o cliente
-    
-else:
-    if inteiroAleatorioEmBytes % 2 == 0:
-        conn.sendall(str.encode("PAR"))
+    inteiroAleatorio = conn.recv(1024) # recebe número aleatório em bytes 
+    inteiroAleatorioEmBytes = int.from_bytes(inteiroAleatorio, byteorder='big') # número em bytes covertido para inteiro
+    print("Inteiro aleatório gerado:", inteiroAleatorioEmBytes)
+
+    if len(str(inteiroAleatorioEmBytes)) > 10:
+        stringAleatoria = ''.join(random.choices(string.ascii_uppercase, k = len(str(inteiroAleatorioEmBytes)))) # gerar string aleatória
+        print("String aleatória gerada:", stringAleatoria)
+        print("")
+        
+        conn.sendall(str.encode(stringAleatoria)) # enviar string aleatória para o cliente
+        
     else:
-        conn.sendall(str.encode("IMPAR"))
+        if inteiroAleatorioEmBytes % 2 == 0:
+            conn.sendall(str.encode("PAR"))
+        else:
+            conn.sendall(str.encode("IMPAR"))
+
