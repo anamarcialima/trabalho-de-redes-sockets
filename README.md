@@ -18,6 +18,10 @@ s.listen()
 Já no programa cliente.py o programa realiza a conexão com o servidor:
 s.connect((HOST, PORT))
 
+E o programa servidor.py aceita a conexão:
+conn, ender = s.accept()
+
+
 Com isso, o programa cliente.py gera um número aleatório ente o intervalo de 0 e 999999999999999999999999999999, ou seja um número de até 30 casas:
 inteiroAleatorio = random.randint(0, 999999999999999999999999999999)
 
@@ -29,5 +33,39 @@ OBS: Como número de casas pode ser váriavel, o calculo (inteiroAleatorio.bit_l
 Tendo em vista isso o programa cliente.py envia o inteiroAleatorioEmBytes para o servidor:
 s.sendall(inteiroAleatorioEmBytes)
 
-Já no programa servidor.py a variavel inteiroAleatorioEmBytes armazena o valor recebido pelo cliente
+Já no programa servidor.py a variavel inteiroAleatorioEmBytes armazena o valor recebido pelo cliente:
 inteiroAleatorioEmBytes = conn.recv(1024)
+
+Além de converter o dado em bytes em inteiro novamente:
+inteiroAleatorio = int.from_bytes(inteiroAleatorioEmBytes, byteorder='big')
+
+Após fazer isso, o programa servidor também verifica se o número de casas do inteiro aleatório que foi recebido possui mais de 10 casas:
+if len(str(inteiroAleatorio)) > 10
+
+OBS: A função len verifica o número de casas apenas de strings, com isso, o inteiro foi transformado em string pela função str(), e assim a função len retorna a quantidade de casas que o inteiro trasnformado em string possui.
+
+Se o codição for satisfeita o programa gera uma sequência de caractres maiusculos com o número de casas igual ao inteiroAleatorio 
+stringAleatoria = ''.join(random.choices(string.ascii_uppercase, k = len(str(inteiroAleatorio))))
+
+E assim, o programa servidor.py manda a string aleatória para o cliente.py
+conn.sendall(str.encode(stringAleatoria))
+
+Se condição não for satisfeita, ou seja se o número de casas do inteiro aleatório for menor que 10, é feito uma verificação se o inteiro é impar ou par e o resultado é enviado para o cliente.py
+ else:
+        if inteiroAleatorio % 2 == 0:
+            conn.sendall(str.encode("PAR"))
+        else:
+            conn.sendall(str.encode("IMPAR"))
+
+
+No programa cliente.py, a variavel recebe a resposta do servidor (a string aleatória ou se o inteiro aleatório é par ou ímpar)
+resposta = s.recv(1024)
+
+Por fim, no programa cliente.py a resposta é enviada novamente para o servidor
+s.sendall(resposta) 
+
+É imprimido uma string "FIM"
+print("FIM")
+
+E o socket é fechado
+s.close()
